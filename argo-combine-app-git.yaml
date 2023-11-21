@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: argo-combined
+  namespace: workflows
+spec:
+  containers:
+  - name: argo-combined
+    image: gcr.io/kaniko-project/executor:debug
+    args: ["--context=git://github.com/makspanizales/argo-combined-app",
+            "--destination=100115/argo-combined-app:1.0.0"]
+    volumeMounts:
+      - name: argo-combined-secret
+        mountPath: /kaniko/.docker
+  restartPolicy: Never
+  volumes:
+    - name: argo-combined-secret
+      secret:
+        secretName: regcred
+        items:
+          - key: .dockerconfigjson
+            path: config.json
